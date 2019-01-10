@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example DApp</title>
+    <link rel="stylesheet" href="./public/style.css">
+    <meta name="viewport" content="width=device-width">
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+  </head>
+  <body>
+    <div id="main">
+      <div class="container">
+          <div id='signed-out' style='display:none'>
+            <h1>Example Dapp</h1>
+            <p>This is an example dapp that uses a game engine.</p>
+            <div id="error"></div>
+            <p>Please sign in to continue.</p>
+            <div id='connect-button'></div>
+            <div id='metamask-container' style='margin-top: 20px'>
+              <button id='metamask-button'>Use Existing Web3 Provider</button>
+            </div>
+          </div>
+      </div>
+      <div id='signed-in' style='display:none'>
+        <div id='game'></div>
+        <div id="get-eth">
+          <p>Your address: <span id="your-address"></span></p>
+          <a href="#" id="copy-address">Copy Address</a>
+          <a href="https://faucet.rinkeby.io" target="_blank">Get ETH</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
