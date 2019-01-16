@@ -59,7 +59,7 @@ export default class ReceiptScene extends BaseScene {
 
         characterImage.setInteractive({ useHandCursor: true });
         characterImage.on('pointerdown', () => {
-            this.input.addUpCallback(function () {
+            this.input.addUpCallback(() => {
                 this.owner.showTokenInfo(token.id);
             }, true);
         });

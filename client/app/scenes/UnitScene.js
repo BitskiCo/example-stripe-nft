@@ -90,13 +90,17 @@ export default class UnitScene extends BaseScene {
 
         deleteButton.setInteractive({ useHandCursor: true });
         deleteButton.on('pointerup', (event) => {
-            this.deleteToken(token);
+            this.transferToken(token);
         });
     }
 
     back() {
         this.scene.stop('unit');
         this.scene.start('boot');
+    }
+
+    transferToken(token) {
+        this.owner.showTransferUI(token);
     }
 
     deleteToken(token) {

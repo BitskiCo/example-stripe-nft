@@ -65,3 +65,28 @@ a:visited {
   padding: 20px;
   border-radius: 10px;
 }
+
+#modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  opacity: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 1000;
+}
+
+#modal-container.visible {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  opacity: 1;
+}
+
+#modal-container #transfer-modal {
+  width: 500px;
+  height: 500px;
+  background: #fff;
+}

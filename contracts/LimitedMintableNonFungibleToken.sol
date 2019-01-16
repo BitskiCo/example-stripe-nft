@@ -1,6 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721Full.sol";
+import "openzeppelin-solidity/contracts/access/roles/MinterRole.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721Burnable.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
@@ -10,7 +11,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
  * Superset of the ERC721 standard that allows for the minting
  * of non-fungible tokens, but limited to n tokens.
  */
-contract LimitedMintableNonFungibleToken is ERC721Full, ERC721Burnable {
+contract LimitedMintableNonFungibleToken is ERC721Full, MinterRole, ERC721Burnable {
 
     using SafeMath for uint256;
 
@@ -19,9 +20,6 @@ contract LimitedMintableNonFungibleToken is ERC721Full, ERC721Burnable {
 
     // The number of character designs
     uint public characterCount;
-
-    // Emitted when a new token is minted
-    event Mint(address indexed _to, uint256 indexed _tokenId);
 
     /**
      * @dev Initializes the contract with a mint limit
@@ -34,23 +32,15 @@ contract LimitedMintableNonFungibleToken is ERC721Full, ERC721Burnable {
     }
 
     /**
-     * @dev Mints a new token with the given id to the sender's address
-     * @param _tokenId the id of the token to mint
-     */
-    function mint(uint256 _tokenId) public {
-        mintTo(msg.sender, _tokenId);
-    }
-
-    /**
      * @dev Mints a new token with the given id to the given address
      * @param _to the owner of the token
      * @param _tokenId the id of the token to mint
      */
-    function mintTo(address _to, uint256 _tokenId) public {
+    function mint(address _to, uint256 _tokenId) public onlyMinter returns (bool) {
         // Enforce the mint limit
         require(balanceOf(_to) < mintLimit, "You have reached the token limit");
         _mint(_to, _tokenId);
-        emit Mint(_to, _tokenId);
+        return true;
     }
 
     /**
@@ -59,9 +49,24 @@ contract LimitedMintableNonFungibleToken is ERC721Full, ERC721Burnable {
      * @param _tokenId the id of the token to mint
      * @param _tokenURI the URI containing the metadata about this token
      */
-    function mintWithTokenURI(address _to, uint256 _tokenId, string memory _tokenURI) public {
-        mintTo(_to, _tokenId);
+    function mintWithTokenURI(address _to, uint256 _tokenId, string memory _tokenURI) public onlyMinter returns (bool) {
+        require(balanceOf(_to) < mintLimit, "You have reached the token limit");
+        _mint(_to, _tokenId);
         _setTokenURI(_tokenId, _tokenURI);
+        return true;
+    }
+
+    /**
+     * @dev Returns the token ids owned by the given address
+     * @param _owner the owner to query
+     */
+    function getOwnerTokens(address _owner) external view returns (uint256[] memory) {
+        uint256 balance = balanceOf(_owner);
+        uint256[] memory tokenIds = new uint256[](balance);
+        for (uint i = 0; i < balance; i++) {
+            tokenIds[i] = tokenOfOwnerByIndex(_owner, i);
+        }
+        return tokenIds;
     }
 
     /**

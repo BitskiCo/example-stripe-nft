@@ -3,7 +3,8 @@ const cors = require('cors');
 const Web3 = require('web3');
 const Bitski = require('bitski-node');
 const Contract = require('./contract');
-const artifacts = require('../../build/contracts/LimitedMintableNonFungibleToken');
+const ExampleAppABI = require('../../build/contracts/ExampleApp');
+const TokenABI = require('../../build/contracts/LimitedMintableNonFungibleToken');
 const BN = require('bn.js');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const bodyParser = require('body-parser');
@@ -28,9 +29,10 @@ class App {
     };
     // Create instance of BitskiProvider
     this.provider = Bitski.getProvider(clientId, options);
-    this.provider.start();
+
     // Create instance of web3
     this.web3 = new Web3(this.provider);
+
     // Create instance of server
     this.app = Express();
   }
@@ -58,10 +60,11 @@ class App {
       this.networkId = await this.web3.eth.net.getId();
 
       // Create instance of contract
-      this.contract = await new Contract(this.web3, this.networkId, artifacts).at(process.env.CONTRACT_ADDRESS);
+      this.contract = await new Contract(this.web3, this.networkId, ExampleAppABI).deployed();
+      this.token = await new Contract(this.web3, this.networkId, TokenABI).deployed();
 
       // Cache token name
-      this.name = await this.contract.methods.name().call();
+      this.name = await this.token.methods.name().call();
 
       // Create the server
       this.createServer(port);
@@ -81,7 +84,7 @@ class App {
    * Watches for new Transfer events from this contract and logs them to the console
    */
   watchTransferEvents() {
-    this.contract.events.Transfer().on('data', (event) => {
+    this.token.events.Transfer().on('data', (event) => {
       const { to, from, tokenId } = event.returnValues;
       console.log(`Token ${tokenId} was transferred from ${from} to ${to}`);
     }).on('error', (error) => {
@@ -105,7 +108,7 @@ class App {
   }
 
   validateTransaction(transaction) {
-    return transaction.estimateGas().then(estimatedGas => {
+    return transaction.estimateGas({ from: this.currentAccount }).then(estimatedGas => {
       return this.web3.eth.getBalance(this.currentAccount).then(currentBalance => {
         const balance = this.web3.utils.toBN(currentBalance);
         const gasPrice = this.web3.utils.toBN(GAS_PRICE);
@@ -190,6 +193,7 @@ class App {
       res.send({
         networkId: this.networkId,
         contractAddress: this.contract.options.address,
+        tokenAddress: this.token.options.address,
         address: this.currentAccount,
         balance: this.balance,
         name: this.name
@@ -206,7 +210,7 @@ class App {
 
     // Returns the total supply (total number of tokens)
     this.app.get('/totalSupply', (req, res) => {
-      this.contract.methods.totalSupply().call().then(totalSupply => {
+      this.token.methods.totalSupply().call().then(totalSupply => {
         res.send(totalSupply);
       }).catch(error => {
         res.send(error);
@@ -215,7 +219,7 @@ class App {
 
     // Returns the name of the contract. Not really that useful :)
     this.app.get('/name', (req, res) => {
-      this.contract.methods.name().call().then(name => {
+      this.token.methods.name().call().then(name => {
         res.send({ name });
       }).catch(error => {
         res.send(error);
@@ -225,7 +229,7 @@ class App {
     // Returns the mint limit directly from the contract
     // (the arbitrary maximum number of tokens per address)
     this.app.get('/mintLimit', (req, res) => {
-      this.contract.methods.mintLimit().call().then(mintLimit => {
+      this.token.methods.mintLimit().call().then(mintLimit => {
         res.send({ mintLimit });
       }).catch(error => {
         res.send(error);
@@ -234,7 +238,7 @@ class App {
 
     // Returns the symbol of the contact (part of the ERC721 standard)
     this.app.get('/symbol', (req, res) => {
-      this.contract.methods.symbol().call().then(symbol => {
+      this.token.methods.symbol().call().then(symbol => {
         res.send({ symbol });
       }).catch(error => {
         res.send(error);
@@ -246,10 +250,10 @@ class App {
     // in a more standard JSON format, rather than dealing with web3.
     this.app.get('/:ownerAddress/tokens', (req, res) => {
       const owner = req.params.ownerAddress;
-      this.contract.methods.balanceOf(owner).call().then(balance => {
+      this.token.methods.balanceOf(owner).call().then(balance => {
         let promises = [];
         for (var i=0; i < balance; i++) {
-          const promise = this.contract.methods.tokenOfOwnerByIndex(owner, i).call();
+          const promise = this.token.methods.tokenOfOwnerByIndex(owner, i).call();
           promises.push(promise);
         }
         return Promise.all(promises).then(tokens => {
@@ -262,7 +266,7 @@ class App {
 
     // Returns the token balance of the provided address.
     this.app.get('/:ownerAddress/balance', (req, res) => {
-      this.contract.methods.balanceOf(req.params.ownerAddress).call().then(balance => {
+      this.token.methods.balanceOf(req.params.ownerAddress).call().then(balance => {
         res.send({ balance });
       }).catch(error => {
         res.send(error);
@@ -280,7 +284,7 @@ class App {
         return res.send({ error: { message: 'Invalid token id passed' } });
       }
       // Load character index from the contract (used to determine which image asset to return)
-      this.contract.methods.imageId(req.params.tokenId).call().then(imageIndex => {
+      this.token.methods.imageId(req.params.tokenId).call().then(imageIndex => {
         const baseUrl = process.env.WEB_URL || 'https://example-dapp-1.bitski.com';
         const description = 'An example of an ERC-721 token';
         const name = this.name; // this is loaded from the contract when we boot
@@ -310,7 +314,7 @@ class App {
 
     // Returns the tokenURI for a given token ID from the contract
     this.app.get('/tokenURI/:tokenId', (req, res) => {
-      this.contract.methods.tokenURI(req.params.tokenId).call().then(uri => {
+      this.token.methods.tokenURI(req.params.tokenId).call().then(uri => {
         res.send({ tokenURI: uri});
       }).catch(err => {
         res.send({ error: err.toString() });
@@ -350,7 +354,7 @@ class App {
       // Generate the token URI (points at this app)
       const baseUrl = process.env.API_URL || 'https://example-dapp-1-api.bitski.com';
       const tokenURI = `${baseUrl}/tokens/${tokenIdString}`;
-      const transaction = this.contract.methods.mintWithTokenURI(recipient, tokenId, tokenURI);
+      const transaction = this.contract.methods.mint(recipient, tokenId, tokenURI);
 
       // Ensure we can run the transaction first
       this.validateTransaction(transaction).then(estimatedGas => {

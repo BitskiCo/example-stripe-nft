@@ -2,7 +2,7 @@
  * This JSON file was created by Truffle and contains the ABI of our contract
  * as well as the address for any networks we have deployed it to.
  */
-const lmnftArtifacts = require('../../../build/contracts/LimitedMintableNonFungibleToken.json');
+const Token = require('../../../build/contracts/LimitedMintableNonFungibleToken.json');
 
 export default class TokenService {
     /**
@@ -14,33 +14,32 @@ export default class TokenService {
         return web3.eth.net.getId().then(function(networkID){
             return web3.eth.getAccounts().then(function(accounts){
                 const contractAddress = TokenService.loadDeployedAddress(networkID);
-                return new TokenService(web3, contractAddress, accounts[0], TOKEN_URI_BASE_URL);
+                return new TokenService(web3, contractAddress, accounts[0]);
             });
         });
     }
 
     static loadDeployedAddress(networkID) {
-        if (lmnftArtifacts.networks && lmnftArtifacts.networks[networkID] && lmnftArtifacts.networks[networkID].address) {
-            return lmnftArtifacts.networks[networkID].address;
+        if (Token.networks && Token.networks[networkID] && Token.networks[networkID].address) {
+            return Token.networks[networkID].address;
         } else {
             throw Error(`Contract not deployed on current network (${networkID}). Run truffle migrate first and try again.`);
         }
     }
 
-    constructor(web3, address, defaultAccount, tokenURIBaseURL) {
+    constructor(web3, address, defaultAccount) {
         if (!address) {
             throw new Error('Contract address not provided');
         }
 
-        if (!lmnftArtifacts || !lmnftArtifacts.abi) {
+        if (!Token || !Token.abi) {
             throw new Error('Contract not compiled or not found');
         }
 
-        this.tokenURIBaseURL = tokenURIBaseURL;
         this.web3 = web3;
         this.defaultAccount = defaultAccount;
 
-        const abi = lmnftArtifacts.abi;
+        const abi = Token.abi;
         this.address = address;
         this.contract = new web3.eth.Contract(abi, address);
         this.contract.setProvider(this.web3.currentProvider);
@@ -68,15 +67,12 @@ export default class TokenService {
      * Gets a list of all tokens owned by us.
      */
     list() {
-        return this.balance().then(balance => {
-            var promises = [];
-            for (var i=0; i < balance; i++) {
-                promises.push(this.contract.methods.tokenOfOwnerByIndex(this.contract.defaultAccount, i).call().then(tokenId => {
-                    return this.getImageId(tokenId).then(imageId => {
-                        return { id: tokenId, imageId: imageId };
-                    });
-                }));
-            }
+        return this.contract.methods.getOwnerTokens(this.defaultAccount).call().then(tokenIds => {
+            const promises = tokenIds.map(tokenId => {
+                return this.getImageId(tokenId).then(imageId => {
+                    return { id: tokenId, imageId: imageId };
+                });
+            });
             return Promise.all(promises);
         });
     }

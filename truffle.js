@@ -1,10 +1,10 @@
 require('dotenv').config();
-const BitskiTruffleProvider = require('bitski-truffle-provider');
+const Bitski = require('bitski-node');
 
 const appWallet = {
   client: {
-    id: process.env.BITSKI_CREDENTIAL_ID,
-    secret: process.env.BITSKI_CREDENTIAL_SECRET
+    id: process.env.BITSKI_APP_WALLET_ID,
+    secret: process.env.BITSKI_APP_WALLET_SECRET
   },
   auth: {
     tokenHost: 'https://account.bitski.com',
@@ -12,30 +12,46 @@ const appWallet = {
   }
 };
 
+let providers = new Map();
+
 module.exports = {
   networks: {
     development: {
       host: "localhost",
       port: 9545,
       network_id: "*",
+      gas: 6700000
     },
     live: {
       network_id: '1',
       provider: () => {
-        return BitskiTruffleProvider("mainnet", appWallet)
+        console.log("mainnet provider");
+        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { credentials: appWallet.client });
+        provider._ready.go();
+        return provider;
       }
     },
     kovan: {
       network_id: '42',
       provider: () => {
-        return BitskiTruffleProvider("kovan", appWallet)
+        console.log("Kovan provider");
+        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { network: 'kovan', credentials: appWallet.client });
+        provider._ready.go();
+        return provider;
       }
     },
     rinkeby: {
       network_id: '4',
       provider: () => {
-        return BitskiTruffleProvider("rinkeby", appWallet)
-      }
+        if (providers.get("rinkeby")) {
+          return providers.get("rinkeby");
+        }
+        console.log('config provider');
+        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { network: 'rinkeby', credentials: appWallet.client });
+        providers.set("rinkeby", provider);
+        return provider;
+      },
+      gas: 4000000
     }
   }
 };

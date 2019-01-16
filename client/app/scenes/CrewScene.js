@@ -49,11 +49,12 @@ export default class CrewScene extends BaseScene {
     }
 
     buyToken() {
-        this.owner.purchaseToken().then(response => {
-            this.showPurchasedToken(response.token, response.transactionHash);
-        }).catch(error => {
-            console.error(error);
-        });
+        this.owner.signPersonal();
+        // this.owner.purchaseToken().then(response => {
+        //     this.showPurchasedToken(response.token, response.transactionHash);
+        // }).catch(error => {
+        //     console.error(error);
+        // });
     }
 
     showPurchasedToken(token, transactionHash) {

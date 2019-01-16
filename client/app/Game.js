@@ -61,6 +61,29 @@ export default class Game {
         window.open(`https://rinkeby.etherscan.io/tx/${transactionHash}`, '_blank');
     }
 
+    showTransferUI(token) {
+        const container = document.getElementById('modal-container');
+        container.innerHTML = ```
+            <div id="transfer-modal">
+                <div>
+                    <h3>Transfer Token</h3>
+                    <p>Enter the address to send this token to:</p>
+                </div>
+                <div>
+                    <input type="text" size="44" placeholder="0x" name="recipient" />
+                </div>
+                <div>
+                    <button class="cancel">Cancel</button>
+                    <button class="submit" type="submit">Transfer</button>
+                </div>
+            </div>
+        ```;
+        container.classList.add('visible');
+        const recipientField = container.querySelector('#transfer-modal input');
+        const submitButton = container.querySelector('#transfer-modal button.submit');
+        const cancelButton = container.querySelector("#transfer-modal button.cancel");
+    }
+
     resize() {
         this.gameEngine.renderer.resize(window.innerHeight, window.innerWidth);
         this.gameEngine.events.emit('resize');
