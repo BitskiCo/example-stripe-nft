@@ -1,8 +1,7 @@
 {
   "scripts": {
     "build": "truffle compile",
-    "test": "truffle test",
-    "develop": "truffle develop"
+    "test": "truffle test"
   },
   "dependencies": {},
   "devDependencies": {
