@@ -85,7 +85,12 @@ export default class Game {
         submitButton.addEventListener('click', () => {
             const recipient = recipientField.value;
             this.hideModal();
-            this.tokenService.transfer(token.id, recipient).send();
+            const method = this.tokenService.transfer(token.id, recipient);
+            this.gameEngine.scene.stop('unit');
+            this.gameEngine.scene.start('transaction', { owner: this, method: method, completion: () => {
+                this.gameEngine.scene.stop('transaction');
+                this.gameEngine.scene.start('boot');
+            }});
         });
 
         cancelButton.addEventListener('click', () => {

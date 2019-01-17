@@ -1,7 +1,7 @@
 {
-  "name": "example-backend-dapp",
+  "name": "stripe-demo-api",
   "version": "1.0.0",
-  "description": "Example dapp backend",
+  "description": "Backend app that is responsible for charging cards and creating tokens",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -1,8 +1,9 @@
 {
+    "name": "stripe-demo-client",
+    "description": "The client-side application, responsible for showing your tokens and collecting credit card info",
     "scripts": {
         "start": "node server.js",
         "build": "NODE_ENV=production webpack",
-        "test": "truffle test",
         "dev": "webpack-dev-server --mode development --port 3000"
     },
     "dependencies": {
@@ -28,7 +29,6 @@
         "webpack": "^4.6.0"
     },
     "devDependencies": {
-        "bitski-truffle-provider": "^0.1.0",
         "html-webpack-plugin": "^3.2.0",
         "truffle": "^4.1.14",
         "webpack-cli": "^3.1.1",

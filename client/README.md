@@ -1,8 +1,10 @@
-# Demo DApp
+# Stripe Demo - Client App
 
-Check out our running example [here](https://example-dapp-1.bitski.com/)
+Build Time Environment Variables
 
-![Screenshot](assets/screenshot.png)
+- BITSKI_CLIENT_ID
+- STRIPE_API_KEY
+- CONTRACT_ADDRESS
 
 ## Create your credentials
 

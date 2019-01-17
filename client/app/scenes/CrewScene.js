@@ -153,7 +153,7 @@ export default class CrewScene extends BaseScene {
             y: 600,
             origin: { x: 0, y: 1 },
             padding: 10,
-            text: "Whats Happening?\n\nWe've queried the ethereum network for any ERC721 tokens that are available from our contract. For each token we calculate an appearance and show that here.\n\nIf you don't have any tokens we let you 'mint' up to five tokens.\n\nIf you do have a token you should see it here. That means our contract worked!",
+            text: "Whats Happening?\n\nWe've queried the ethereum network for any ERC-721 tokens you own from our contract. For each token we calculate an appearance and show that here.\n\nIf you don't have any tokens yet, you can buy up to five using a credit card.To purchase, use this test number:\n\n4242 4242 4242 4242, and any expiration and cvv.",
             style: whatsHappeningStyle
         });
 
