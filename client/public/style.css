@@ -80,13 +80,44 @@ a:visited {
 
 #modal-container.visible {
   display: flex;
-  align-content: center;
+  align-items: center;
   justify-content: center;
   opacity: 1;
 }
 
 #modal-container #transfer-modal {
-  width: 500px;
-  height: 500px;
-  background: #fff;
+  width: 375px;
+  background: #333;
+  padding: 30px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+#transfer-modal input {
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#transfer-modal button {
+  background: #555;
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+  border-radius: 2px;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+}
+
+#transfer-modal button.submit {
+  background-color: #2B67AB;
+}
+
+#transfer-modal h3 {
+  margin-top: 0;
 }

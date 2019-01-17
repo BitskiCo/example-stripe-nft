@@ -9,7 +9,6 @@ import AppWalletService from './services/AppWalletService.js';
 import StripeService from './services/StripeService.js';
 import TokenService from './services/TokenService.js';
 import Web3 from 'web3';
-import BN from 'bn.js';
 
 export default class Game {
 
@@ -19,7 +18,7 @@ export default class Game {
         this.appWallet = new AppWalletService('http://localhost:4200');
 
         this.setAccount().then(() => {
-            this.tokenService = new TokenService(this.web3, CONTRACT_ADDRESS, this.currentAccount, TOKEN_URI_BASE_URL);
+            this.tokenService = new TokenService(this.web3, CONTRACT_ADDRESS, this.currentAccount);
             this.loadGame();
 
             while (parentElement.firstChild) {
@@ -63,25 +62,41 @@ export default class Game {
 
     showTransferUI(token) {
         const container = document.getElementById('modal-container');
-        container.innerHTML = ```
+        container.innerHTML = `
             <div id="transfer-modal">
                 <div>
                     <h3>Transfer Token</h3>
-                    <p>Enter the address to send this token to:</p>
+                    <p>Enter the ethereum address to send this token to:</p>
                 </div>
                 <div>
                     <input type="text" size="44" placeholder="0x" name="recipient" />
                 </div>
                 <div>
-                    <button class="cancel">Cancel</button>
-                    <button class="submit" type="submit">Transfer</button>
+                    <button class="btn submit" type="submit">Transfer</button>
+                    <button class="btn cancel">Cancel</button>
                 </div>
             </div>
-        ```;
+        `;
         container.classList.add('visible');
-        const recipientField = container.querySelector('#transfer-modal input');
+        const recipientField = container.querySelector('#transfer-modal input[name=recipient]');
         const submitButton = container.querySelector('#transfer-modal button.submit');
         const cancelButton = container.querySelector("#transfer-modal button.cancel");
+
+        submitButton.addEventListener('click', () => {
+            const recipient = recipientField.value;
+            this.hideModal();
+            this.tokenService.transfer(token.id, recipient).send();
+        });
+
+        cancelButton.addEventListener('click', () => {
+            this.hideModal();
+        });
+    }
+
+    hideModal() {
+        const container = document.getElementById('modal-container');
+        container.classList.remove('visible');
+        container.innerHTML = '';
     }
 
     resize() {

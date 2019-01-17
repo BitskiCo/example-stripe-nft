@@ -8,12 +8,12 @@ const buttonStyle = {
     backgroundColor: '#2B67AB'
 };
 
-const deleteStyle = {
+const transferStyle = {
     fontSize: '32px',
     fontFamily: 'Arial',
     color: '#ffffff',
     align: 'center',
-    backgroundColor: '#E95C3B'
+    backgroundColor: '#2DAA58'
 };
 
 const whatsHappeningStyle = {
@@ -48,7 +48,6 @@ export default class UnitScene extends BaseScene {
             text: `Token #${config.token.id}`,
             style: whatsHappeningStyle
         });
-        console.log(config.token.id);
 
         this.owner = config.owner;
 
@@ -77,19 +76,17 @@ export default class UnitScene extends BaseScene {
         backButton.setInteractive({ useHandCursor: true });
         backButton.on('pointerup', this.back, this);
 
-        let deleteButtonConfig = {
+        let transferButton = this.sys.make.text({
             x: 600,
             y: 0,
             padding: 10,
             origin: { x: 1, y: 0 },
             text: 'Transfer',
-            style: deleteStyle
-        };
+            style: transferStyle
+        });
 
-        let deleteButton = this.sys.make.text(deleteButtonConfig);
-
-        deleteButton.setInteractive({ useHandCursor: true });
-        deleteButton.on('pointerup', (event) => {
+        transferButton.setInteractive({ useHandCursor: true });
+        transferButton.on('pointerup', (event) => {
             this.transferToken(token);
         });
     }
