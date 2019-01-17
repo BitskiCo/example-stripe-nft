@@ -69,7 +69,8 @@ module.exports = env => {
         'TOKEN_URI_BASE_URL': JSON.stringify(tokenURIBaseURL),
         'CONTRACT_ADDRESS': JSON.stringify(contractAddress),
         'SENTRY_DSN': JSON.stringify(sentryDSN),
-        'STRIPE_API_KEY': JSON.stringify(process.env.STRIPE_API_KEY || false)
+        'STRIPE_API_KEY': JSON.stringify(process.env.STRIPE_API_KEY || false),
+        'APP_WALLET_URL': JSON.stringify(process.env.APP_WALLET_URL || false),
       })
     ]
   }

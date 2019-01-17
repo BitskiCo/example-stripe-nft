@@ -15,7 +15,7 @@ export default class Game {
     constructor(parentElement, provider) {
         this.web3 = new Web3(provider);
         this.stripe = new StripeService(STRIPE_API_KEY);
-        this.appWallet = new AppWalletService('http://localhost:4200');
+        this.appWallet = new AppWalletService(APP_WALLET_URL || 'http://localhost:4200');
 
         this.setAccount().then(() => {
             this.tokenService = new TokenService(this.web3, CONTRACT_ADDRESS, this.currentAccount);
