@@ -1,7 +1,7 @@
 {
     "scripts": {
         "start": "node server.js",
-        "build": "truffle compile && NODE_ENV=production webpack",
+        "build": "NODE_ENV=production webpack",
         "test": "truffle test",
         "dev": "webpack-dev-server --mode development --port 3000"
     },
