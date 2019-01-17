@@ -7,7 +7,7 @@ module.exports = {
     },
     production: {
       network: 'rinkeby', //ethereum network to use for production
-      redirectURL: 'https://example-dapp-1.bitski.com/public/callback.html', //url the popup will redirect to when logged in
+      redirectURL: 'https://stripe-demo.bitski.com/public/callback.html', //url the popup will redirect to when logged in
       netId: 4
     }
   },
