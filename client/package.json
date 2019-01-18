@@ -7,6 +7,7 @@
         "dev": "webpack-dev-server --mode development --port 3000"
     },
     "dependencies": {
+        "dotenv": "^6.2.0",
         "express": "^4.16.4"
     },
     "devDependencies": {
@@ -15,7 +16,6 @@
         "babel-preset-env": "^1.6.1",
         "bitski": "^0.3.0",
         "copy-webpack-plugin": "^4.5.1",
-        "dotenv": "^6.2.0",
         "html-webpack-plugin": "^3.2.0",
         "phaser": "^3.15.1",
         "raven-js": "^3.26.2",
