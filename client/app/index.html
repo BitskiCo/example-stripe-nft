@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Example DApp</title>
+    <title>Example NFT with Stripe</title>
     <link rel="stylesheet" href="./public/style.css">
     <meta name="viewport" content="width=device-width">
     <script src="https://checkout.stripe.com/checkout.js"></script>
@@ -10,13 +10,15 @@
     <div id="main">
       <div class="container">
           <div id='signed-out' style='display:none'>
-            <h1>Example Dapp</h1>
-            <p>This is an example dapp that uses a game engine.</p>
-            <div id="error"></div>
-            <p>Please sign in to continue.</p>
-            <div id='connect-button'></div>
-            <div id='metamask-container' style='margin-top: 20px'>
-              <button id='metamask-button'>Use Existing Web3 Provider</button>
+            <div>
+                <h1>Stripe + NFTs</h1>
+                <p>This demonstrates how to accept traditional credit card payments, and use Bitski's App Wallet to deliver purchased goods to an Ethereum account.</p>
+                <div id="error"></div>
+                <p>Please connect a wallet to continue</p>
+                <div id='connect-button'></div>
+                <div id='metamask-container' style='margin-top: 20px'>
+                  <button id='metamask-button'>Use Existing Web3 Provider</button>
+                </div>
             </div>
           </div>
       </div>

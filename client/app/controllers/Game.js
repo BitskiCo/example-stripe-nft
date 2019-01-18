@@ -1,14 +1,15 @@
 import 'phaser';
 
-import CrewScene from './scenes/CrewScene.js';
-import BootScene from './scenes/BootScene.js';
-import UnitScene from './scenes/UnitScene.js';
-import ReceiptScene from './scenes/ReceiptScene.js';
-import TransactionScene from './scenes/TransactionScene.js';
-import AppWalletService from './services/AppWalletService.js';
-import StripeService from './services/StripeService.js';
-import TokenService from './services/TokenService.js';
+import CrewScene from '../scenes/CrewScene.js';
+import BootScene from '../scenes/BootScene.js';
+import UnitScene from '../scenes/UnitScene.js';
+import ReceiptScene from '../scenes/ReceiptScene.js';
+import TransactionScene from '../scenes/TransactionScene.js';
+import AppWalletService from '../services/AppWalletService.js';
+import StripeService from '../services/StripeService.js';
+import TokenService from '../services/TokenService.js';
 import Web3 from 'web3';
+import { TransferModal } from '../views/Transfer.js';
 
 export default class Game {
 
@@ -61,47 +62,16 @@ export default class Game {
     }
 
     showTransferUI(token) {
-        const container = document.getElementById('modal-container');
-        container.innerHTML = `
-            <div id="transfer-modal">
-                <div>
-                    <h3>Transfer Token</h3>
-                    <p>Enter the ethereum address to send this token to:</p>
-                </div>
-                <div>
-                    <input type="text" size="44" placeholder="0x" name="recipient" />
-                </div>
-                <div>
-                    <button class="btn submit" type="submit">Transfer</button>
-                    <button class="btn cancel">Cancel</button>
-                </div>
-            </div>
-        `;
-        container.classList.add('visible');
-        const recipientField = container.querySelector('#transfer-modal input[name=recipient]');
-        const submitButton = container.querySelector('#transfer-modal button.submit');
-        const cancelButton = container.querySelector("#transfer-modal button.cancel");
-
-        submitButton.addEventListener('click', () => {
-            const recipient = recipientField.value;
-            this.hideModal();
+        this.transferModal = new TransferModal(token, (recipient) => {
             const method = this.tokenService.transfer(token.id, recipient);
             this.gameEngine.scene.stop('unit');
             this.gameEngine.scene.start('transaction', { owner: this, method: method, completion: () => {
                 this.gameEngine.scene.stop('transaction');
                 this.gameEngine.scene.start('boot');
             }});
+            this.transferModal = undefined;
         });
-
-        cancelButton.addEventListener('click', () => {
-            this.hideModal();
-        });
-    }
-
-    hideModal() {
-        const container = document.getElementById('modal-container');
-        container.classList.remove('visible');
-        container.innerHTML = '';
+        this.transferModal.show();
     }
 
     resize() {

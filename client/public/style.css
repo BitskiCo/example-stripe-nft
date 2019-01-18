@@ -31,39 +31,48 @@ a:visited {
   color: #fff;
 }
 
-#get-eth {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  z-index: 1000;
-  font-size: 14px;
-  margin-left: -100px;
-  display: none;
-  text-align: center;
+#metamask-button {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 'Helvetica Neue', sans-serif;
   font-weight: bold;
-}
-
-#get-eth a {
+  font-size: 12px;
+  background-color: #F79220;
+  background-position-y: 50%;
+  background-repeat: no-repeat;
+  color: #fff;
+  border: none;
+  margin: 0;
+  padding: 0 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  height: 28px;
+  line-height: 28px;
   display: block;
-  padding: 10px;
-  width: 200px;
-  box-sizing: border-box;
-  background: #2B67AB;
-  border-radius: 5px;
-  margin-bottom: 5px;
+  width: 100%;
 }
 
-#get-eth a:hover {
-  text-decoration: none;
+.bitski-connect-button {
+  display: block;
+  width: 100%;
 }
 
 #signed-out {
-  margin: 30px auto 0 auto;
-  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+#signed-out > div {
+  width: 300px;
   text-align: center;
   background: #111;
   padding: 20px;
   border-radius: 10px;
+
 }
 
 #modal-container {

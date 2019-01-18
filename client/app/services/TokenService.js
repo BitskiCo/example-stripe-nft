@@ -106,7 +106,6 @@ export default class TokenService {
 
     subscribe(callback) {
         this.subscription = this.contract.events.Transfer().on('data', (event) => {
-            console.log(event);
             if (event.returnValues.to == this.defaultAccount || event.returnValues.from == this.defaultAccount) {
                 callback(event);
             }
