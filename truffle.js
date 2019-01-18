@@ -1,15 +1,9 @@
 require('dotenv').config();
 const Bitski = require('bitski-node');
 
-const appWallet = {
-  client: {
-    id: process.env.BITSKI_APP_WALLET_ID,
-    secret: process.env.BITSKI_APP_WALLET_SECRET
-  },
-  auth: {
-    tokenHost: 'https://account.bitski.com',
-    tokenPath: '/oauth2/token'
-  }
+const credentials = {
+  id: process.env.BITSKI_APP_WALLET_ID,
+  secret: process.env.BITSKI_APP_WALLET_SECRET
 };
 
 let providers = new Map();
@@ -25,18 +19,22 @@ module.exports = {
     live: {
       network_id: '1',
       provider: () => {
-        console.log("mainnet provider");
-        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { credentials: appWallet.client });
-        provider._ready.go();
+        if (providers.get("mainnet")) {
+          return providers.get("mainnet");
+        }
+        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { credentials: credentials });
+        providers.set("mainnet", provider);
         return provider;
       }
     },
     kovan: {
       network_id: '42',
       provider: () => {
-        console.log("Kovan provider");
-        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { network: 'kovan', credentials: appWallet.client });
-        provider._ready.go();
+        if (providers.get("kovan")) {
+          return providers.get("kovan");
+        }
+        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { network: 'kovan', credentials: credentials });
+        providers.set("kovan", provider);
         return provider;
       }
     },
@@ -46,8 +44,7 @@ module.exports = {
         if (providers.get("rinkeby")) {
           return providers.get("rinkeby");
         }
-        console.log('config provider');
-        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { network: 'rinkeby', credentials: appWallet.client });
+        const provider = Bitski.getProvider(process.env.BITSKI_APP_WALLET_ID, { network: 'rinkeby', credentials: credentials });
         providers.set("rinkeby", provider);
         return provider;
       },

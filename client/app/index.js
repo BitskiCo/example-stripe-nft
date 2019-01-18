@@ -1,5 +1,4 @@
 import Game from './Game.js';
-import ClipboardJS from 'clipboard';
 import { Bitski, AuthenticationStatus } from 'bitski';
 import Raven from 'raven-js';
 import Web3 from 'web3';
@@ -11,8 +10,6 @@ if (SENTRY_DSN) {
 let bitski = new Bitski(BITSKI_CLIENT_ID, BITSKI_REDIRECT_URL);
 
 window.addEventListener('load', function() {
-  // Setup ClipboardJS
-  let clipboard = new ClipboardJS('#copy-address');
 
   // Setup Metamask Button
   configureMetamaskButton();
