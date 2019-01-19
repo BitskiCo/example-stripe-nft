@@ -17,7 +17,7 @@ View the demo: [https://stripe-demo.bitski.com](https://stripe-demo.bitski.com)
 
 ### Caveats
 
-- This flow assumes that these NFTs are not inherently very valuable, and that fraud will be low. A more sophisticated contract could be written that allows for the App Wallet to revoke the token in the case of a chargeback.
+- This flow assumes that these NFTs are not inherently very valuable, and that fraud will be low. A more sophisticated contract could be written that allows for the App Wallet to revoke the token in the case of a chargeback. The ability to revoke could be only temporary, within the timeframe where a chargeback is possible.
 
 - The Stripe transaction fee is $0.30, and the Ethereum transaction also costs a small amount of ETH to run. Charging just $1 dollar might not be enough.
 
