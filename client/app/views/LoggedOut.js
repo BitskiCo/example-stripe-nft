@@ -25,7 +25,7 @@ export class LoggedOutView {
   }
 
   show() {
-    this.element.style.display = 'block';
+    this.element.style.display = 'flex';
   }
 
   hide() {
