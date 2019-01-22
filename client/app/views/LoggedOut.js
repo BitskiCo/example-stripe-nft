@@ -42,7 +42,7 @@ export class LoggedOutView {
   }
 
   createLoginButton() {
-    this.bitski.getConnectButton({ container: this.connectButtonContainer }, (error, user) => {
+    this.bitski.getConnectButton({ container: this.connectButtonContainer, size: 'LARGE' }, (error, user) => {
       if (error) {
         this.setError(error);
         return;
