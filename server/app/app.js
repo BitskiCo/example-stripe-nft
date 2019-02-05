@@ -87,6 +87,8 @@ class App {
       console.log(`Token ${tokenId} was transferred from ${from} to ${to}`);
     }).on('error', (error) => {
       console.log('Error subscribing', error);
+      const now = new Date();
+      console.log(now.toISOString());
     });
   }
 
@@ -99,7 +101,10 @@ class App {
         this.balance = balance;
         console.log(`Current balance: ${balance}`);
       }).catch(error => {
+        console.log('Error updating balance:');
         console.error(error);
+        const now = new Date();
+        console.log(now.toISOString());
       });
       this.updateBalance();
     }, 60 * 1000);
