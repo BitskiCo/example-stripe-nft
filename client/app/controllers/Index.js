@@ -59,6 +59,7 @@ export class Index {
       this.showApp();
       this.game = new Game(this.loggedInView.gameContainer, provider);
     }).catch(error => {
+      console.error(error);
       alert(error.message);
     });
   }
