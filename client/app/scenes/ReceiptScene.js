@@ -1,4 +1,4 @@
-import BaseScene from './BaseScene.js';
+import { Scene } from 'phaser';
 
 const buttonStyle = {
     fontSize: '64px',
@@ -15,7 +15,7 @@ const whatsHappeningStyle = {
     wordWrap: { width: 1200 }
 }
 
-export default class ReceiptScene extends BaseScene {
+export default class ReceiptScene extends Scene {
     constructor() {
         super({ key: 'receipt', active: false });
     }
@@ -29,7 +29,6 @@ export default class ReceiptScene extends BaseScene {
     }
 
     create(config) {
-        super.create(config);
 
         const token = config.token;
 

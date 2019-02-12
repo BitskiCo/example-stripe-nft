@@ -1,4 +1,4 @@
-import BaseScene from './BaseScene.js';
+import { Scene } from 'phaser';
 
 const labelStyle = {
     fontSize: '64px',
@@ -24,14 +24,13 @@ const whatsHappeningStyle = {
     wordWrap: { width: 1200 }
 }
 
-export default class BootScene extends BaseScene {
+export default class BootScene extends Scene {
     constructor(owner) {
         super({ key: 'boot', active: true });
         this.owner = owner;
     }
 
     create(config) {
-        super.create(config);
 
         this.make.text({
             x: 0,

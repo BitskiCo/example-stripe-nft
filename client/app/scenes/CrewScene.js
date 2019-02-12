@@ -1,5 +1,5 @@
 import TokenService from '../services/TokenService.js';
-import BaseScene from './BaseScene.js';
+import { Scene } from 'phaser';
 import Phaser from 'phaser';
 
 const labelStyle = {
@@ -34,7 +34,7 @@ const characterPositions = [
     [680, 620],
 ];
 
-export default class CrewScene extends BaseScene {
+export default class CrewScene extends Scene {
     constructor() {
         super({ key: 'crew', active: false });
         this.tokens = [];
@@ -142,7 +142,6 @@ export default class CrewScene extends BaseScene {
     }
 
     create(config) {
-        super.create(config);
         this.owner = config.owner;
         this.tokenService = config.tokenService;
         this.tokens = config.tokens;

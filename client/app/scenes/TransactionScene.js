@@ -1,4 +1,4 @@
-import BaseScene from './BaseScene.js';
+import { Scene } from 'phaser';
 
 const labelStyle = {
     fontSize: '64px',
@@ -40,7 +40,7 @@ let backButtonConfig = {
     style: buttonStyle
 };
 
-export default class TransactionScene extends BaseScene {
+export default class TransactionScene extends Scene {
     constructor() {
         super({ key: 'transaction', active: false });
         this.callback = null;
@@ -52,7 +52,6 @@ export default class TransactionScene extends BaseScene {
     }
 
     create(config) {
-        super.create(config);
 
         this.owner = config.owner;
 
