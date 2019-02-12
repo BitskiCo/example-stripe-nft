@@ -5,6 +5,7 @@ const text = {
 
 const label = Object.assign({}, text, {
   color: '#fff',
+  fontSize: '32px',
 });
 
 const title = Object.assign({}, label, {
@@ -32,7 +33,6 @@ const negativeButton = Object.assign({}, button, {
 
 const explanation = Object.assign({}, label, {
   backgroundColor: '#333333',
-  fontSize: '32px',
   wordWrap: { width: 1160 }
 });
 
