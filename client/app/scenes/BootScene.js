@@ -30,6 +30,10 @@ export default class BootScene extends Scene {
         this.owner = owner;
     }
 
+    preload() {
+        this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+    }
+
     create(config) {
 
         this.make.text({

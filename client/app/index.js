@@ -7,6 +7,13 @@ if (SENTRY_DSN) {
 
 const controller = new Index();
 
+var WebFontConfig = {
+  //  The Google Fonts we want to load (specify as many as you like in the array)
+  google: {
+    families: ['Acme']
+  }
+};
+
 window.addEventListener('load', function() {
   controller.start();
 });
