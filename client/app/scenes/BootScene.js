@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 const labelStyle = {
     fontSize: '64px',
-    fontFamily: 'Arial',
+    fontFamily: 'Acme',
     color: '#ffffff',
     align: 'center',
     backgroundColor: '#2DAA58'
@@ -19,7 +19,7 @@ const labelConfig = {
 
 const whatsHappeningStyle = {
     backgroundColor: '#333333',
-    font: '32px Arial',
+    font: '32px Acme',
     fill: 'white',
     wordWrap: { width: 1200 }
 }

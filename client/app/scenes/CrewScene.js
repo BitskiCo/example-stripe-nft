@@ -4,7 +4,8 @@ import Phaser from 'phaser';
 
 const labelStyle = {
     fontSize: '64px',
-    fontFamily: 'Arial',
+    fontFamily: 'Acme',
+    fontWeight: 'bold',
     color: '#ffffff',
     align: 'center',
     backgroundColor: '#2DAA58'
@@ -12,16 +13,23 @@ const labelStyle = {
 
 const buttonStyle = {
     fontSize: '64px',
-    fontFamily: 'Arial',
-    fontWeight: 'bold',
+    fontFamily: 'Acme',
     color: '#ffffff',
     align: 'center',
     backgroundColor: '#2B67AB'
 };
 
+const logoutStyle = {
+    fontSize: '52px',
+    fontFamily: 'Acme',
+    color: '#ffffff',
+    align: 'center',
+    backgroundColor: '#444'
+};
+
 const whatsHappeningStyle = {
     backgroundColor: '#333333',
-    font: '32px Arial',
+    font: '32px Acme',
     fill: 'white',
     wordWrap: { width: 1160 }
 }
@@ -108,7 +116,7 @@ export default class CrewScene extends Scene {
         } else if (totalTokens < 5) {
             title = 'You have ' + totalTokens + ' guys!';
         } else {
-            title = 'You have a complete crew!';
+            title = 'You have a full crew!';
         }
 
         this.label.text = title;
@@ -152,11 +160,11 @@ export default class CrewScene extends Scene {
             y: 1200,
             origin: { x: 0, y: 1 },
             padding: 20,
-            text: "Whats Happening?\n\nWe've queried the ethereum network for any ERC-721 tokens you own from our contract. For each token we calculate an appearance and show that here.\n\nIf you don't have any tokens yet, you can buy up to five using a credit card.To purchase, use this test number:\n\n4242 4242 4242 4242, and any expiration and cvv.",
+            text: "These are the crypto characters you own from our smart contract. Each character is represented by a unique token which determines its appearance.\n\nYou can buy up to five characters using a credit card. To purchase, use this test number: 4242 4242 4242 4242. Use any expiration date and cvv.",
             style: whatsHappeningStyle
         });
 
-        this.physics.world.setBounds(0, 168, 1000, 500);
+        this.physics.world.setBounds(0, 168, 1100, 500);
 
         let labelConfig = {
             x: 600,
@@ -169,18 +177,33 @@ export default class CrewScene extends Scene {
         this.label = this.sys.make.text(labelConfig);
 
         let buttonConfig = {
-            x: 1200,
-            y: 0,
+            x: 600,
+            y: 950,
             padding: 20,
-            origin: { x: 1, y: 0 },
+            origin: { x: 0.5, y: 1 },
             style: buttonStyle,
             alpha: 0,
-            text: 'Buy $1'
+            text: 'Buy Character: $1.00'
         };
 
         this.moreButton = this.sys.make.text(buttonConfig);
         this.moreButton.on('pointerup', () => {
             this.buyToken();
+        });
+
+        buttonConfig = {
+            x: 1180,
+            y: 20,
+            padding: 20,
+            origin: { x: 1, y: 0 },
+            style: logoutStyle,
+            text: 'Sign Out'
+        };
+
+        this.logOutButton = this.sys.make.text(buttonConfig);
+        this.logOutButton.setInteractive({ useHandCursor: true });
+        this.logOutButton.on('pointerup', () => {
+           this.owner.logOut();
         });
 
         this.configureTokens();

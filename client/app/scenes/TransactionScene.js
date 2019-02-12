@@ -2,14 +2,14 @@ import { Scene } from 'phaser';
 
 const labelStyle = {
     fontSize: '64px',
-    fontFamily: 'Arial',
+    fontFamily: 'Acme',
     color: '#ffffff',
     align: 'center'
 };
 
 const whatsHappeningStyle = {
     backgroundColor: '#333333',
-    font: '64px Arial',
+    font: '64px Acme',
     fill: 'white',
     wordWrap: { width: 400 }
 }
@@ -25,7 +25,7 @@ const labelConfig = {
 
 const buttonStyle = {
     fontSize: '64px',
-    fontFamily: 'Arial',
+    fontFamily: 'Acme',
     color: '#ffffff',
     align: 'center',
     backgroundColor: '#2B67AB'

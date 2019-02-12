@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 
 const buttonStyle = {
     fontSize: '64px',
-    fontFamily: 'Arial',
+    fontFamily: 'Acme',
     color: '#ffffff',
     align: 'center',
     backgroundColor: '#2B67AB'

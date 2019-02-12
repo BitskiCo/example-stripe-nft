@@ -13,7 +13,8 @@ import { TransferModal } from '../views/Transfer.js';
 
 export default class Game {
 
-    constructor(parentElement, provider) {
+    constructor(parent, provider) {
+        this.parent = parent;
         this.web3 = new Web3(provider);
         this.stripe = new StripeService(STRIPE_API_KEY);
         this.appWallet = new AppWalletService(APP_WALLET_URL || 'http://localhost:4200');
@@ -68,9 +69,12 @@ export default class Game {
         this.transferModal.show();
     }
 
-    resize() {
-        // this.gameEngine.renderer.resize(window.innerHeight, window.innerWidth);
-        // this.gameEngine.events.emit('resize');
+    logOut() {
+        this.parent.logOut();
+    }
+
+    destroy() {
+        this.gameEngine.destroy(true);
     }
 
     loadGame() {

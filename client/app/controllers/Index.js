@@ -44,6 +44,15 @@ export class Index {
     this.loggedInView.show();
   }
 
+  logOut() {
+    this.bitski.signOut().then(() => {
+      this.showLogin();
+    }).catch((error) => {
+      this.showLogin();
+      console.error(error);
+    });
+  }
+
   verifyNetwork() {
     return this.web3.eth.net.getId().then(netId => {
       if (netId !== EXPECTED_NETWORK_ID) {
@@ -57,7 +66,7 @@ export class Index {
     this.web3 = new Web3(provider);
     this.verifyNetwork().then(() => {
       this.showApp();
-      this.game = new Game(this.loggedInView.gameContainer, provider);
+      this.game = new Game(this, provider);
     }).catch(error => {
       console.error(error);
       alert(error.message);
