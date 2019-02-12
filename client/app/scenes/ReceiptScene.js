@@ -1,19 +1,5 @@
 import { Scene } from 'phaser';
-
-const buttonStyle = {
-    fontSize: '64px',
-    fontFamily: 'Acme',
-    color: '#ffffff',
-    align: 'center',
-    backgroundColor: '#2B67AB'
-};
-
-const whatsHappeningStyle = {
-    backgroundColor: '#333333',
-    font: '22px Courier',
-    fill: 'white',
-    wordWrap: { width: 1200 }
-}
+import styles from '../utils/styles';
 
 export default class ReceiptScene extends Scene {
     constructor() {
@@ -38,7 +24,7 @@ export default class ReceiptScene extends Scene {
             origin: { x: 0, y: 1 },
             padding: 20,
             text: `Token #${token.id}`,
-            style: whatsHappeningStyle
+            style: styles.monospaceLabel
         });
 
         this.make.text({
@@ -47,7 +33,7 @@ export default class ReceiptScene extends Scene {
           origin: { x: 0, y: 1 },
           padding: 20,
           text: `Transaction ${config.transactionHash}`,
-          style: whatsHappeningStyle
+          style: styles.explanation
       });
 
         this.owner = config.owner;
@@ -69,7 +55,7 @@ export default class ReceiptScene extends Scene {
             origin: { x: 0, y: 0 },
             padding: 20,
             text: 'Back',
-            style: buttonStyle
+            style: styles.primaryButton
         };
 
         let backButton = this.sys.make.text(backButtonConfig);
@@ -83,7 +69,7 @@ export default class ReceiptScene extends Scene {
           origin: { x: 1, y: 0 },
           padding: 20,
           text: 'View Txn',
-          style: buttonStyle
+          style: styles.primaryButton
         });
 
         viewTransactionButton.setInteractive({ useHandCursor: true });
@@ -97,11 +83,7 @@ export default class ReceiptScene extends Scene {
           origin: { x: 0, y: 1 },
           padding: 20,
           text: 'Status: Unknown',
-          style: {
-              font: '32px Arial',
-              fill: 'white',
-              backgroundColor: '#333333'
-          }
+          style: styles.label
         });
 
         this.owner.tokenService.watchTransaction(config.transactionHash, (error, receipt) => {

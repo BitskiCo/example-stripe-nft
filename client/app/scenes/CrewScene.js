@@ -1,38 +1,5 @@
-import TokenService from '../services/TokenService.js';
 import { Scene } from 'phaser';
-import Phaser from 'phaser';
-
-const labelStyle = {
-    fontSize: '64px',
-    fontFamily: 'Acme',
-    fontWeight: 'bold',
-    color: '#ffffff',
-    align: 'center',
-    backgroundColor: '#2DAA58'
-};
-
-const buttonStyle = {
-    fontSize: '64px',
-    fontFamily: 'Acme',
-    color: '#ffffff',
-    align: 'center',
-    backgroundColor: '#2B67AB'
-};
-
-const logoutStyle = {
-    fontSize: '52px',
-    fontFamily: 'Acme',
-    color: '#ffffff',
-    align: 'center',
-    backgroundColor: '#444'
-};
-
-const whatsHappeningStyle = {
-    backgroundColor: '#333333',
-    font: '32px Acme',
-    fill: 'white',
-    wordWrap: { width: 1160 }
-}
+import styles from '../utils/styles';
 
 const characterPositions = [
     [200, 340],
@@ -119,13 +86,13 @@ export default class CrewScene extends Scene {
             title = 'You have a full crew!';
         }
 
-        this.label.text = title;
+        this.title.text = title;
 
         if (totalTokens < 5) {
             this.moreButton.setInteractive({ useHandCursor: true });
             this.moreButton.alpha = 1;
         } else {
-            this.moreButton.alpha = 0;
+            this.moreButton.alpha = 0.3;
             this.moreButton.removeInteractive();
         }
     }
@@ -161,46 +128,41 @@ export default class CrewScene extends Scene {
             origin: { x: 0, y: 1 },
             padding: 20,
             text: "These are the crypto characters you own from our smart contract. Each character is represented by a unique token which determines its appearance.\n\nYou can buy up to five characters using a credit card. To purchase, use this test number: 4242 4242 4242 4242. Use any expiration date and cvv.",
-            style: whatsHappeningStyle
+            style: styles.explanation
         });
 
         this.physics.world.setBounds(0, 168, 1100, 500);
 
-        let labelConfig = {
+        this.title = this.sys.make.text({
             x: 600,
             y: 0,
             origin: { x: 0.5, y: 0 },
             padding: 20,
-            style: labelStyle
-        };
+            style: styles.title
+        });
 
-        this.label = this.sys.make.text(labelConfig);
-
-        let buttonConfig = {
+        this.moreButton = this.sys.make.text({
             x: 600,
             y: 950,
             padding: 20,
             origin: { x: 0.5, y: 1 },
-            style: buttonStyle,
+            style: styles.primaryButton,
             alpha: 0,
             text: 'Buy Character: $1.00'
-        };
+        });
 
-        this.moreButton = this.sys.make.text(buttonConfig);
         this.moreButton.on('pointerup', () => {
             this.buyToken();
         });
 
-        buttonConfig = {
+        this.logOutButton = this.sys.make.text({
             x: 1180,
             y: 20,
             padding: 20,
             origin: { x: 1, y: 0 },
-            style: logoutStyle,
+            style: styles.secondaryButton,
             text: 'Sign Out'
-        };
-
-        this.logOutButton = this.sys.make.text(buttonConfig);
+        });
         this.logOutButton.setInteractive({ useHandCursor: true });
         this.logOutButton.on('pointerup', () => {
            this.owner.logOut();

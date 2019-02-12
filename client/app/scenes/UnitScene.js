@@ -1,27 +1,5 @@
 import { Scene } from 'phaser';
-
-const buttonStyle = {
-    fontSize: '64px',
-    fontFamily: 'Acme',
-    color: '#ffffff',
-    align: 'center',
-    backgroundColor: '#2B67AB'
-};
-
-const transferStyle = {
-    fontSize: '64px',
-    fontFamily: 'Acme',
-    color: '#ffffff',
-    align: 'center',
-    backgroundColor: '#2DAA58'
-};
-
-const whatsHappeningStyle = {
-    backgroundColor: '#333333',
-    font: '22px Courier',
-    fill: 'white',
-    wordWrap: { width: 1200 },
-}
+import styles from '../utils/styles';
 
 export default class UnitScene extends Scene {
     constructor() {
@@ -45,7 +23,7 @@ export default class UnitScene extends Scene {
             origin: { x: 0, y: 1 },
             padding: 20,
             text: `Token #${config.token.id}`,
-            style: whatsHappeningStyle
+            style: styles.monospaceLabel
         });
 
         this.owner = config.owner;
@@ -65,7 +43,7 @@ export default class UnitScene extends Scene {
             origin: { x: 0, y: 0 },
             padding: 20,
             text: 'Back',
-            style: buttonStyle
+            style: styles.primaryButton
         };
 
         let backButton = this.sys.make.text(backButtonConfig);
@@ -79,7 +57,7 @@ export default class UnitScene extends Scene {
             padding: 20,
             origin: { x: 1, y: 0 },
             text: 'Transfer',
-            style: transferStyle
+            style: styles.secondaryButton
         });
 
         transferButton.setInteractive({ useHandCursor: true });

@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import styles from '../utils/styles';
 
 const labelStyle = {
     fontSize: '64px',
@@ -14,7 +15,7 @@ const labelConfig = {
     origin: { x: 0.5, y: 0 },
     padding: 20,
     text: 'Loading....',
-    style: labelStyle
+    style: styles.title
 };
 
 const whatsHappeningStyle = {
@@ -37,7 +38,7 @@ export default class BootScene extends Scene {
             padding: 20,
             origin: { x: 0, y: 1 },
             text: "Whats Happening?\n\nWe are querying the ethereum network. If this takes a while something might be broken...",
-            style: whatsHappeningStyle
+            style: styles.explanation
         });
         this.make.text(labelConfig);
 
