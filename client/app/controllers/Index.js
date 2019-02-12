@@ -23,7 +23,7 @@ export class Index {
 
   checkAuthStatus() {
     this.bitski.getAuthStatus().then((authStatus) => {
-      if (authStatus == AuthenticationStatus.Connected) {
+      if (authStatus !== AuthenticationStatus.NotConnected) {
         this.startGame(this.bitski.getProvider(BITSKI_PROVIDER_ID));
       } else {
         this.showLogin();
