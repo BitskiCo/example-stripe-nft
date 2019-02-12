@@ -5,7 +5,7 @@ import { LoggedInView } from '../views/LoggedIn.js';
 import { LoggedOutView } from '../views/LoggedOut.js';
 
 const LOGGED_OUT_SELECTOR = "#signed-out";
-const LOGGED_IN_SELECTOR = "#signed-in";
+const LOGGED_IN_SELECTOR = "#game";
 
 export class Index {
 

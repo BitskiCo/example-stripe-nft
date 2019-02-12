@@ -29,13 +29,17 @@ export class TransferModal {
     const submitButton = this.container.querySelector('#transfer-modal button.submit');
     const cancelButton = this.container.querySelector("#transfer-modal button.cancel");
 
-    submitButton.addEventListener('click', () => {
+    this.container.addEventListener('mouseup', (e) => {
+      e.stopPropagation();
+    });
+
+    submitButton.addEventListener('click', (e) => {
       const recipient = recipientField.value;
       this.callback(recipient);
       this.hide();
     });
 
-    cancelButton.addEventListener('click', () => {
+    cancelButton.addEventListener('click', (e) => {
         this.hide();
     });
   }

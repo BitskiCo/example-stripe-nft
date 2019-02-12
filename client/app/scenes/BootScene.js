@@ -1,7 +1,7 @@
 import BaseScene from './BaseScene.js';
 
 const labelStyle = {
-    fontSize: '32px',
+    fontSize: '64px',
     fontFamily: 'Arial',
     color: '#ffffff',
     align: 'center',
@@ -9,19 +9,19 @@ const labelStyle = {
 };
 
 const labelConfig = {
-    x: 300,
+    x: 600,
     y: 0,
     origin: { x: 0.5, y: 0 },
-    padding: 10,
+    padding: 20,
     text: 'Loading....',
     style: labelStyle
 };
 
 const whatsHappeningStyle = {
     backgroundColor: '#333333',
-    font: '18px Arial',
+    font: '32px Arial',
     fill: 'white',
-    wordWrap: { width: 600 }
+    wordWrap: { width: 1200 }
 }
 
 export default class BootScene extends BaseScene {
@@ -35,8 +35,8 @@ export default class BootScene extends BaseScene {
 
         this.make.text({
             x: 0,
-            y: 600,
-            padding: 10,
+            y: 1200,
+            padding: 20,
             origin: { x: 0, y: 1 },
             text: "Whats Happening?\n\nWe are querying the ethereum network. If this takes a while something might be broken...",
             style: whatsHappeningStyle

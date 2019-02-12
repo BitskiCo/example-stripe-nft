@@ -11,7 +11,7 @@ export class LoggedInView {
 
   _assignElement() {
     this.element = document.querySelector(this.selector);
-    this.gameContainer = this.element.querySelector('#game');
+    this.gameContainer = this.element;
   }
 
   show() {

@@ -3,7 +3,7 @@ import BaseScene from './BaseScene.js';
 import Phaser from 'phaser';
 
 const labelStyle = {
-    fontSize: '32px',
+    fontSize: '64px',
     fontFamily: 'Arial',
     color: '#ffffff',
     align: 'center',
@@ -11,7 +11,7 @@ const labelStyle = {
 };
 
 const buttonStyle = {
-    fontSize: '32px',
+    fontSize: '64px',
     fontFamily: 'Arial',
     fontWeight: 'bold',
     color: '#ffffff',
@@ -21,17 +21,17 @@ const buttonStyle = {
 
 const whatsHappeningStyle = {
     backgroundColor: '#333333',
-    font: '16px Arial',
+    font: '32px Arial',
     fill: 'white',
-    wordWrap: { width: 580 }
+    wordWrap: { width: 1160 }
 }
 
 const characterPositions = [
-    [100, 170],
-    [260, 150],
-    [420, 190],
-    [180, 310],
-    [340, 310],
+    [200, 340],
+    [520, 300],
+    [840, 380],
+    [360, 620],
+    [680, 620],
 ];
 
 export default class CrewScene extends BaseScene {
@@ -72,7 +72,7 @@ export default class CrewScene extends BaseScene {
         let character = token.imageId;
         let characterPosition = characterPositions[index];
         let characterImage = this.physics.add.image(characterPosition[0], characterPosition[1], `character-${character}`);
-        characterImage.setScale(0.7);
+        characterImage.setScale(1.2);
         characterImage.setOrigin(0,0);
         let velocityX = Math.random() * (100 - (-100)) + (-100);
         let velocityY = Math.random() * (300 - (-300)) + (-300);
@@ -150,29 +150,29 @@ export default class CrewScene extends BaseScene {
 
         this.make.text({
             x: 0,
-            y: 600,
+            y: 1200,
             origin: { x: 0, y: 1 },
-            padding: 10,
+            padding: 20,
             text: "Whats Happening?\n\nWe've queried the ethereum network for any ERC-721 tokens you own from our contract. For each token we calculate an appearance and show that here.\n\nIf you don't have any tokens yet, you can buy up to five using a credit card.To purchase, use this test number:\n\n4242 4242 4242 4242, and any expiration and cvv.",
             style: whatsHappeningStyle
         });
 
-        this.physics.world.setBounds(0, 84, 500, 250);
+        this.physics.world.setBounds(0, 168, 1000, 500);
 
         let labelConfig = {
-            x: 300,
+            x: 600,
             y: 0,
             origin: { x: 0.5, y: 0 },
-            padding: 10,
+            padding: 20,
             style: labelStyle
         };
 
         this.label = this.sys.make.text(labelConfig);
 
         let buttonConfig = {
-            x: 600,
+            x: 1200,
             y: 0,
-            padding: 10,
+            padding: 20,
             origin: { x: 1, y: 0 },
             style: buttonStyle,
             alpha: 0,

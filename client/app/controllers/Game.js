@@ -21,12 +21,6 @@ export default class Game {
         this.setAccount().then(() => {
             this.tokenService = new TokenService(this.web3, CONTRACT_ADDRESS, this.currentAccount);
             this.loadGame();
-
-            while (parentElement.firstChild) {
-                parentElement.removeChild(parentElement.firstChild);
-            }
-
-            parentElement.appendChild(this.gameEngine.canvas);
         });
     }
 
@@ -75,19 +69,23 @@ export default class Game {
     }
 
     resize() {
-        this.gameEngine.renderer.resize(window.innerHeight, window.innerWidth);
-        this.gameEngine.events.emit('resize');
+        // this.gameEngine.renderer.resize(window.innerHeight, window.innerWidth);
+        // this.gameEngine.events.emit('resize');
     }
 
     loadGame() {
-        const size = Math.min(600, window.innerWidth);
 
         const bootScene = new BootScene(this);
 
         const gameConfig = {
             type: Phaser.AUTO,
-            width: window.innerWidth,
-            height: window.innerHeight,
+            scale: {
+                parent: 'game',
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+                width: 1200,
+                height: 1200
+            },
             physics: {
                 default: 'arcade',
                 arcade: {
@@ -101,10 +99,5 @@ export default class Game {
 
         const game = new Phaser.Game(gameConfig);
         this.gameEngine = game;
-
-        window.onresize = function() {
-            game.renderer.resize(window.innerWidth, window.innerHeight);
-            game.events.emit('resize');
-        };
     }
 }

@@ -1,7 +1,7 @@
 import BaseScene from './BaseScene.js';
 
 const buttonStyle = {
-    fontSize: '32px',
+    fontSize: '64px',
     fontFamily: 'Arial',
     color: '#ffffff',
     align: 'center',
@@ -10,9 +10,9 @@ const buttonStyle = {
 
 const whatsHappeningStyle = {
     backgroundColor: '#333333',
-    font: '11px Courier',
+    font: '22px Courier',
     fill: 'white',
-    wordWrap: { width: 600 }
+    wordWrap: { width: 1200 }
 }
 
 export default class ReceiptScene extends BaseScene {
@@ -35,18 +35,18 @@ export default class ReceiptScene extends BaseScene {
 
         this.make.text({
             x: 0,
-            y: 600,
+            y: 1200,
             origin: { x: 0, y: 1 },
-            padding: 10,
+            padding: 20,
             text: `Token #${token.id}`,
             style: whatsHappeningStyle
         });
 
         this.make.text({
           x: 0,
-          y: 550,
+          y: 1100,
           origin: { x: 0, y: 1 },
-          padding: 10,
+          padding: 20,
           text: `Transaction ${config.transactionHash}`,
           style: whatsHappeningStyle
       });
@@ -55,20 +55,20 @@ export default class ReceiptScene extends BaseScene {
 
         const character = token.imageId;
         const characterImageString = `character-${character}`;
-        const characterImage = this.sys.add.image(300, 300, characterImageString);
+        const characterImage = this.sys.add.image(600, 600, characterImageString);
+        characterImage.setScale(1.5);
 
         characterImage.setInteractive({ useHandCursor: true });
-        characterImage.on('pointerdown', () => {
-            this.input.addUpCallback(() => {
-                this.owner.showTokenInfo(token.id);
-            }, true);
+
+        characterImage.on('pointerup', () => {
+            this.owner.showTokenInfo(token.id);
         });
 
         let backButtonConfig = {
             x: 0,
             y: 0,
             origin: { x: 0, y: 0 },
-            padding: 10,
+            padding: 20,
             text: 'Back',
             style: buttonStyle
         };
@@ -79,29 +79,27 @@ export default class ReceiptScene extends BaseScene {
         backButton.on('pointerup', this.back, this);
 
         const viewTransactionButton = this.sys.make.text({
-          x: 600,
+          x: 1200,
           y: 0,
           origin: { x: 1, y: 0 },
-          padding: 10,
+          padding: 20,
           text: 'View Txn',
           style: buttonStyle
         });
 
         viewTransactionButton.setInteractive({ useHandCursor: true });
-        viewTransactionButton.on('pointerdown', () => {
-          this.input.addUpCallback(() => {
+        viewTransactionButton.on('pointerup', () => {
             this.owner.showTransactionInfo(config.transactionHash);
-          });
         });
 
         this.statusLabel = this.make.text({
           x: 0,
-          y: 500,
+          y: 1000,
           origin: { x: 0, y: 1 },
-          padding: 10,
+          padding: 20,
           text: 'Status: Unknown',
           style: {
-              font: '16px Arial',
+              font: '32px Arial',
               fill: 'white',
               backgroundColor: '#333333'
           }
