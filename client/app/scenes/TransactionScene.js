@@ -31,7 +31,7 @@ export default class TransactionScene extends Scene {
             padding: 20,
             origin: {x: 0.5, y: 0.5 },
             text: 'Waiting for approval...',
-            style: labelStyle
+            style: styles.label
         });
 
         if (config.method) {
