@@ -1,6 +1,7 @@
 const Express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const Sentry = require('@sentry/node');
 
 class Server {
 
@@ -9,10 +10,16 @@ class Server {
     this.server = Express();
     this.configureMiddleware();
     this.defineRoutes();
+    if (process.env.SENTRY_DSN) {
+      this.server.use(Sentry.Handlers.errorHandler());
+    }
     this.start(port);
   }
 
   configureMiddleware() {
+    if (process.env.SENTRY_DSN) {
+      this.server.use(Sentry.Handlers.requestHandler());
+    }
     // Allow CORS
     this.server.use(cors());
 

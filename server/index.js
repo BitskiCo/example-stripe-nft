@@ -1,5 +1,10 @@
 require('dotenv').config();
+const Sentry = require('@sentry/node');
 const App = require('./app/app');
+
+if (process.env.SENTRY_DSN) {
+  Sentry.init({ dsn: process.env.SENTRY_DSN });
+}
 
 const credentials = {
   id: process.env.BITSKI_APP_WALLET_ID,
