@@ -31,7 +31,7 @@ class Transaction extends EventEmitter {
   set error(value) {
     this._error = value;
     if (value) {
-      this.emit('error', error);
+      this.emit('error', value);
     }
   }
 
