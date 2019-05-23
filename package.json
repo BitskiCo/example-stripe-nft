@@ -5,8 +5,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "bitski-node": "^0.4.0",
-    "bitski-truffle-provider": "github:BitskiCo/bitski-truffle-provider",
+    "bitski-node": "0.6.0-alpha.2",
     "dotenv": "^6.2.0",
     "openzeppelin-solidity": "^2.1.1",
     "truffle": "^5.0.0"
