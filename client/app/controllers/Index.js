@@ -22,16 +22,11 @@ export class Index {
   }
 
   checkAuthStatus() {
-    this.bitski.getAuthStatus().then((authStatus) => {
-      if (authStatus !== AuthenticationStatus.NotConnected) {
-        this.startGame(this.bitski.getProvider(BITSKI_PROVIDER_ID));
-      } else {
-        this.showLogin();
-      }
-    }).catch((error) => {
-      console.error(error);
+    if (this.bitski.authStatus !== AuthenticationStatus.NotConnected) {
+      this.startGame(this.bitski.getProvider(BITSKI_PROVIDER_ID));
+    } else {
       this.showLogin();
-    });
+    }
   }
 
   showLogin() {
