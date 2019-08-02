@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@sentry/node": "^4.6.2",
-    "bitski-node": "^0.7.0",
+    "bitski-node": "^0.7.1",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "dotenv": "^6.1.0",
