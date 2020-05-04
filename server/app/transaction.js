@@ -49,6 +49,7 @@ class Transaction extends EventEmitter {
   }
 
   validate(from) {
+    console.log('Validating transaction', this.inputs);
     return this.transaction.estimateGas({ from: from }).then(estimatedGas => {
       this.gas = estimatedGas;
       return this.web3.eth.getGasPrice().then(estimatedGasPrice => {
@@ -73,6 +74,8 @@ class Transaction extends EventEmitter {
       return Promise.reject(new Error('Transaction not yet validated. Please call validate() and try again'));
     }
     return new Promise((fulfill, reject) => {
+      const transactionObject = { from: from, gas: this.gas, gasPrice: this.gasPrice, data: this.transaction.encodeABI() };
+      console.log('Submitting transaction', transactionObject);
       this.submittedTransaction = this.transaction.send({ from: from, gas: this.gas, gasPrice: this.gasPrice }, (error, transactionHash) => {
         if (error) {
           reject(error);

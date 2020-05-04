@@ -8,5 +8,17 @@ module.exports = function(deployer, network, accounts) {
         return instance.addMinter(ExampleApp.address, { from: accounts[0] });
       }
     });
+  }).then(() => {
+    if (process.env["ENTERPRISE_WALLET_ADDRESS"]) {
+      console.log('Set minter, now setting app wallet address');
+      return ExampleApp.deployed().then(instance => {
+        return instance.setAppWalletAddress(process.env["ENTERPRISE_WALLET_ADDRESS"]);
+      }).catch((error) => {
+        console.error('Could not update enterprise wallet address', error);
+        return true;
+      });
+    } else {
+      return true;
+    }
   });
 };

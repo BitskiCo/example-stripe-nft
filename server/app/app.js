@@ -7,9 +7,57 @@ const BN = require('bn.js');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const Transaction = require('./transaction');
 const Server = require('./server');
+const TokenTypes = new BN(process.env.TOKEN_TYPES || '5', 10);
 
 const GAS_PRICE = '1100000000'; // Ideally this would be dynamically updated based on demand.
 const MIN_CONFIRMATIONS = 2; // Minimum # of confirmations required before finalizing charges
+
+const tokenMetadata = {
+  '1': {
+    "name": "Bitski Red - 1 Case",
+    "description": "Produced in France, Bordeaux, Saint Estephe. Vintage: 2017. A good year for Dame de Montrose, showing extremely well balanced plum and damson fruits, and a lovely texture. Drinking Window 2024 – 2038",
+    "imageUrl": "/assets/tokenAsset-1.png",
+    "productId": "product-1",
+    "traits": [{
+        "trait_type": "Region",
+        "value": "Saint Estephe"
+      },
+      {
+        "trait_type": "Winery",
+        "value": "Château d'Bit"
+      }
+    ]
+  },
+  '2': {
+    "name": "Bitski White - 1 Case",
+    "description": "Produced in France, Bordeaux, Saint Estephe. Vintage: 2012. This wine is ripe, smooth, and delectable. Enjoy its lovely aromas and flavors of ripe fruit and oak with a well-seasoned roast leg of lamb.",
+    "imageUrl": "/assets/tokenAsset-2.png",
+    "productId": "product-2",
+    "traits": [{
+        "trait_type": "Region",
+        "value": "Saint Estephe"
+      },
+      {
+        "trait_type": "Winery",
+        "value": "Château Bitski"
+      }
+    ]
+  },
+  '3': {
+    "name": "Bitski Rosé - 1 Case",
+    "description": "Produced in France, Bordeaux, Saint Estephe. Vintage: 2015. This slightly spritzy Austrian rosé is made from Zweigelt grapes, and features juicy watermelon and strawberries on the nose followed by citrus for balance.",
+    "imageUrl": "/assets/tokenAsset-3.png",
+    "traits": [{
+        "trait_type": "Region",
+        "value": "Saint Estephe"
+      },
+      {
+        "trait_type": "Winery",
+        "value": "Famille OTL"
+      }
+    ]
+  }
+}
 
 class App {
 
@@ -83,7 +131,11 @@ class App {
    */
   watchTransferEvents() {
     this.token.events.Transfer().on('data', (event) => {
-      const { to, from, tokenId } = event.returnValues;
+      const {
+        to,
+        from,
+        tokenId
+      } = event.returnValues;
       console.log(`Token ${tokenId} was transferred from ${from} to ${to}`);
     }).on('error', (error) => {
       console.log('Error subscribing', error);
@@ -133,7 +185,7 @@ class App {
   getTokens(owner) {
     return this.token.methods.balanceOf(owner).call().then(balance => {
       let promises = [];
-      for (var i=0; i < balance; i++) {
+      for (var i = 0; i < balance; i++) {
         const promise = this.token.methods.tokenOfOwnerByIndex(owner, i).call();
         promises.push(promise);
       }
@@ -147,50 +199,55 @@ class App {
 
   getTokenMetadata(tokenId) {
     // Load character index from the contract (used to determine which image asset to return)
-    return this.token.methods.imageId(tokenId).call().then(imageIndex => {
-      const baseUrl = process.env.WEB_URL || 'https://example-dapp-1.bitski.com';
-      const description = 'An example of an ERC-721 token';
-      const name = this.name; // this is loaded from the contract when we boot
-      const imageUrl = `${baseUrl}/assets/character-${imageIndex}.png`;
+    const imageIndex = new BN(tokenId).mod(TokenTypes).add(new BN(1));
+    const metadata = tokenMetadata[imageIndex];
 
-      //The ERC-721 Metadata standard
-      const erc721Details = {
-        name: name,
-        description: description,
-        image: imageUrl
-      };
+    const baseUrl = process.env.WEB_URL || 'https://example-dapp-1.bitski.com';
+    const description = metadata.description;
+    const name = metadata.name;
+    const imageUrl = `${baseUrl}/${metadata.imageUrl}`;
 
-      // Additional OpenSea Metadata
-      const openSeaExtras = {
-        external_url: baseUrl,
-      };
+    //The ERC-721 Metadata standard
+    const erc721Details = {
+      name: name,
+      description: description,
+      image: imageUrl
+    };
 
-      // Additional RareBits Metadata
-      const rareBitsExtras = {
-        image_url: imageUrl,
-        home_url: baseUrl
-      };
+    // Additional OpenSea Metadata
+    const openSeaExtras = {
+      external_url: baseUrl,
+      attributes: metadata.traits,
+    };
 
-      return Object.assign({}, erc721Details, openSeaExtras, rareBitsExtras);
-    });
+    // Additional RareBits Metadata
+    const rareBitsExtras = {
+      image_url: imageUrl,
+      home_url: baseUrl
+    };
+
+    return Object.assign({}, erc721Details, openSeaExtras, rareBitsExtras);
   }
 
-  processTransaction(token, recipient) {
-    // Create the transaction inputs
-    const tokenId = this.web3.utils.randomHex(32);
-    const tokenIdString = this.web3.utils.hexToNumberString(tokenId);
+  tokenIdFromProductId(productId) {
+    const productIdBN = new BN(productId, 10).sub(new BN(1));
+    const randomTokenId = new BN(this.web3.utils.randomHex(32), 16);
+    const tokenId = randomTokenId.sub(randomTokenId.mod(TokenTypes)).add(productIdBN);
+    return tokenId;
+  }
+
+  processTransaction(token, recipient, productId) {
+    const tokenId = this.tokenIdFromProductId(productId);
+    const tokenIdString = tokenId.toString(10);
 
     // Generate the token URI (points at this app)
     const baseUrl = process.env.API_URL || 'https://example-dapp-1-api.bitski.com';
     const tokenURI = `${baseUrl}/tokens/${tokenIdString}`;
 
-    // Calculate NFT metadata
-    const BN = this.web3.utils.BN;
-    const expectedImageId = this.web3.utils.toBN(tokenIdString).mod(new BN(5)).add(new BN(1)).toString();
 
     // Create "transaction" object to manage state of the transaction
     const transaction = new Transaction(this.web3, this.contract.methods.mint);
-    transaction.setInputs(recipient, tokenId, tokenURI);
+    transaction.setInputs(recipient, '0x' + tokenId.toJSON(), tokenURI);
 
     return transaction.validate(this.currentAccount).then(() => {
       console.log("Transaction validated");
@@ -233,7 +290,13 @@ class App {
               console.error(error);
             });
           });
-          return { transactionHash, token: { id: tokenIdString, imageId: expectedImageId } };
+          return {
+            transactionHash,
+            token: {
+              id: tokenIdString,
+              imageId: productId
+            }
+          };
         });
       });
     });

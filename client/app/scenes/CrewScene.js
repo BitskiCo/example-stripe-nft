@@ -16,11 +16,11 @@ export default class CrewScene extends Scene {
     }
 
     preload() {
-        this.load.image('character-1', 'assets/character-1.png');
-        this.load.image('character-2', 'assets/character-2.png');
-        this.load.image('character-3', 'assets/character-3.png');
-        this.load.image('character-4', 'assets/character-4.png');
-        this.load.image('character-5', 'assets/character-5.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
     }
 
     buyToken() {
@@ -46,7 +46,7 @@ export default class CrewScene extends Scene {
     drawToken(token, index) {
         let character = token.imageId;
         let characterPosition = characterPositions[index];
-        let characterImage = this.physics.add.image(characterPosition[0], characterPosition[1], `character-${character}`);
+        let characterImage = this.physics.add.image(characterPosition[0], characterPosition[1], `tokenAsset-${character}`);
         characterImage.setScale(1.2);
         characterImage.setOrigin(0,0);
         let velocityX = Math.random() * (100 - (-100)) + (-100);

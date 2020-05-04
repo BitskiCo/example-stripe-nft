@@ -13,8 +13,8 @@ contract ExampleApp {
     LimitedMintableNonFungibleToken token;
     address appWallet;
 
-    modifier onlyAppWallet() {
-        require (msg.sender == appWallet);
+    modifier onlyEnterpriseWallet() {
+        require (msg.sender == appWallet, 'This must be called from the enterprise wallet');
         _;
     }
 
@@ -23,11 +23,11 @@ contract ExampleApp {
         token = LimitedMintableNonFungibleToken(tokenAddress);
     }
 
-    function setAppWalletAddress(address _newAddress) public onlyAppWallet {
+    function setAppWalletAddress(address _newAddress) public onlyEnterpriseWallet {
         appWallet = _newAddress;
     }
 
-    function mint(address _to, uint256 _tokenId, string memory _tokenURI) public onlyAppWallet returns (bool) {
+    function mint(address _to, uint256 _tokenId, string memory _tokenURI) public onlyEnterpriseWallet returns (bool) {
         return token.mintWithTokenURI(_to, _tokenId, _tokenURI);
     }
 

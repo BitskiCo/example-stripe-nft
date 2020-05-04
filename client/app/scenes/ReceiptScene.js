@@ -7,11 +7,11 @@ export default class ReceiptScene extends Scene {
     }
 
     preload() {
-        this.load.image('character-1', 'assets/character-1.png');
-        this.load.image('character-2', 'assets/character-2.png');
-        this.load.image('character-3', 'assets/character-3.png');
-        this.load.image('character-4', 'assets/character-4.png');
-        this.load.image('character-5', 'assets/character-5.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
+        this.load.image('tokenAsset-$1', 'assets/tokenAsset-$1.png');
     }
 
     create(config) {
@@ -39,7 +39,7 @@ export default class ReceiptScene extends Scene {
         this.owner = config.owner;
 
         const character = token.imageId;
-        const characterImageString = `character-${character}`;
+        const characterImageString = `tokenAsset-${character}`;
         const characterImage = this.sys.add.image(600, 600, characterImageString);
         characterImage.setScale(1.5);
 

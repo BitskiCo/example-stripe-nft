@@ -1,12 +1,12 @@
 module.exports = {
   app: {
-    id: '365c9c6a-5602-4bc6-942c-7084beada709' //change this to your app's client id
+    id: '9c5726ca-8fd7-45c2-9290-a47439e5f87c' //change this to your app's client id
   },
   appWallet: {
     client: {
       //if you have an app wallet, add your client id and secret here
-      id: 'ad2c4eb9-bc22-4000-b17e-54dd1e568440',
-      secret: '56iBfVL]fxB-pRyS}19[er9lBxuD}MvcUV6P0Yl7UE]pNjJR}ntkVkC-Iysg6raDt'
+      id: '602ee7a2-e323-4001-94e6-858cf98d591c',
+      secret: '1152AK9MzGmvNTmafL4WksJS1-0AHrrq6BzwbM6swoIb8w10QP6GoJw5wCViAwJgYt'
     },
     auth: {
       tokenHost: 'https://account.bitski.com',
@@ -19,8 +19,8 @@ module.exports = {
       redirectURL: 'http://localhost:3000/callback.html' //url the popup will redirect to when logged in
     },
     production: {
-      network: 'kovan', //ethereum network to use for production
-      redirectURL: 'https://mydomain.com/callback.html' //url the popup will redirect to when logged in
+      network: 'rinkeby', //ethereum network to use for production
+      redirectURL: 'https://stripe-wine-demo.bitski.com/callback.html' //url the popup will redirect to when logged in
     }
   },
   networkIds: {

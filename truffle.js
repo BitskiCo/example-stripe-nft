@@ -1,5 +1,9 @@
 require('dotenv').config();
-const { ProviderManager } = require('bitski-node');
+const {
+  ProviderManager
+} = require('bitski-node');
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const mnemonic = process.env['MNEMONIC'];
 
 const id = process.env.BITSKI_APP_WALLET_ID;
 const secret = process.env.BITSKI_APP_WALLET_SECRET;
@@ -10,9 +14,8 @@ module.exports = {
   networks: {
     development: {
       host: "localhost",
-      port: 9545,
-      network_id: "*",
-      gas: 6700000
+      port: 7545,
+      network_id: "*"
     },
     live: {
       network_id: '1',
@@ -27,11 +30,19 @@ module.exports = {
       }
     },
     rinkeby: {
+      // must be a thunk, otherwise truffle commands may hang in CI
+      provider: () =>
+        new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/8f17cced7d3449e3a202a462b6547001",
+          0, 1, true, "m/44'/1'/0'/0/"
+        ),
       network_id: '4',
-      provider: () => {
-        return providerManager.getProvider('rinkeby');
-      },
-      gas: 4000000
+      skipDryRun: true,
     }
+  },
+  plugins: [
+    'truffle-plugin-verify'
+  ],
+  api_keys: {
+    etherscan: process.env.ETHERSCAN_API_KEY
   }
 };

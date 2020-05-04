@@ -112,11 +112,9 @@ class Server {
       if (!req.params.tokenId || !req.params.tokenId.match(/^\d+$/g)) {
         return res.send({ error: { message: 'Invalid token id passed' } });
       }
-      this.app.getTokenMetadata(req.params.tokenId).then(metadata => {
-        res.json(metadata);
-      }).catch(error => {
-        res.status(500).json({ error: error.toString() });
-      });
+
+      const metadata = this.app.getTokenMetadata(req.params.tokenId);
+      return res.json(metadata);
     });
 
     // Returns the tokenURI for a given token ID from the contract
@@ -134,6 +132,7 @@ class Server {
 
     this.server.post('/process-transaction', (req, res) => {
       const token = req.body.token;
+      const productId = (req.body.productId || '').replace('product-', '');
       const recipient = req.body.recipient;
 
       // Ensure payment method token was submitted
@@ -156,7 +155,7 @@ class Server {
         return;
       }
 
-      this.app.processTransaction(token, recipient).then((response) => {
+      this.app.processTransaction(token, recipient, productId).then((response) => {
         res.json(response);
       }).catch(error => {
         console.error(error);

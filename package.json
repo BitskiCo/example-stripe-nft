@@ -1,10 +1,15 @@
 {
   "scripts": {
     "build": "truffle compile",
+    "migrate": "truffle migrate",
+    "migrate:rinkeby": "truffle migrate --network rinkeby --verbose-rpc",
+    "verify:rinkeby": "truffle run verify LimitedMintableNonFungibleToken --network rinkeby",
     "test": "truffle test"
   },
   "dependencies": {},
   "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.0.34",
+    "truffle-plugin-verify": "^0.3.10",
     "bitski-node": "^0.7.1",
     "dotenv": "^6.2.0",
     "openzeppelin-solidity": "^2.1.1",
