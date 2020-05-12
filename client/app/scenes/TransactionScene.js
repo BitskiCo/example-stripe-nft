@@ -41,7 +41,7 @@ export default class TransactionScene extends Scene {
 
     send(method, message, completion) {
         var completionCalled = false;
-        method.send({ gas: 700000 })
+        method.send({ gas: 10000000 })
         .on('transactionHash', function (hash) {
             if (completionCalled) {
                 return;

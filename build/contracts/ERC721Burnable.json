@@ -1089,7 +1089,7 @@
   },
   "networks": {},
   "schemaVersion": "3.1.0",
-  "updatedAt": "2020-05-04T17:13:26.633Z",
+  "updatedAt": "2020-05-12T21:06:15.027Z",
   "devdoc": {
     "details": "ERC721 Token that can be irreversibly burned (destroyed).",
     "methods": {

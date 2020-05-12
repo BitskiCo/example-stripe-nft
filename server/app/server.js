@@ -110,11 +110,12 @@ class Server {
     // but load some of the metadata from the contract itself, completing the loop.
     this.server.get('/tokens/:tokenId', (req,res) => {
       if (!req.params.tokenId || !req.params.tokenId.match(/^\d+$/g)) {
-        return res.send({ error: { message: 'Invalid token id passed' } });
+        res.send({ error: { message: 'Invalid token id passed' } });
       }
 
-      const metadata = this.app.getTokenMetadata(req.params.tokenId);
-      return res.json(metadata);
+      this.app.getTokenMetadata(req.params.tokenId).then(metadata => {
+        res.json(metadata);
+      });
     });
 
     // Returns the tokenURI for a given token ID from the contract

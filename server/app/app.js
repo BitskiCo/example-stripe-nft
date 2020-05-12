@@ -8,56 +8,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const Transaction = require('./transaction');
 const Server = require('./server');
 const TokenTypes = new BN(process.env.TOKEN_TYPES || '5', 10);
-
-const GAS_PRICE = '1100000000'; // Ideally this would be dynamically updated based on demand.
-const MIN_CONFIRMATIONS = 2; // Minimum # of confirmations required before finalizing charges
-
-const tokenMetadata = {
-  '1': {
-    "name": "Bitski Red - 1 Case",
-    "description": "Produced in France, Bordeaux, Saint Estephe. Vintage: 2017. A good year for Dame de Montrose, showing extremely well balanced plum and damson fruits, and a lovely texture. Drinking Window 2024 – 2038",
-    "imageUrl": "/assets/tokenAsset-1.png",
-    "productId": "product-1",
-    "traits": [{
-        "trait_type": "Region",
-        "value": "Saint Estephe"
-      },
-      {
-        "trait_type": "Winery",
-        "value": "Château d'Bit"
-      }
-    ]
-  },
-  '2': {
-    "name": "Bitski White - 1 Case",
-    "description": "Produced in France, Bordeaux, Saint Estephe. Vintage: 2012. This wine is ripe, smooth, and delectable. Enjoy its lovely aromas and flavors of ripe fruit and oak with a well-seasoned roast leg of lamb.",
-    "imageUrl": "/assets/tokenAsset-2.png",
-    "productId": "product-2",
-    "traits": [{
-        "trait_type": "Region",
-        "value": "Saint Estephe"
-      },
-      {
-        "trait_type": "Winery",
-        "value": "Château Bitski"
-      }
-    ]
-  },
-  '3': {
-    "name": "Bitski Rosé - 1 Case",
-    "description": "Produced in France, Bordeaux, Saint Estephe. Vintage: 2015. This slightly spritzy Austrian rosé is made from Zweigelt grapes, and features juicy watermelon and strawberries on the nose followed by citrus for balance.",
-    "imageUrl": "/assets/tokenAsset-3.png",
-    "traits": [{
-        "trait_type": "Region",
-        "value": "Saint Estephe"
-      },
-      {
-        "trait_type": "Winery",
-        "value": "Famille OTL"
-      }
-    ]
-  }
-}
+const fs = require('fs');
+const util = require('util');
+const readFile = util.promisify(fs.readFile);
 
 class App {
 
@@ -193,31 +146,42 @@ class App {
     });
   }
 
+  async getInventory() {
+    const inventoryPath = process.env.INVENTORY_FILE;
+
+    if (inventoryPath) {
+      return readFile(inventoryPath, 'utf-8')
+        .then(data => {
+          return JSON.parse(data);
+        });
+    } else {
+      return [];
+    }
+  }
+
   getTokenURI(tokenId) {
     return this.token.methods.tokenURI(tokenId).call();
   }
 
-  getTokenMetadata(tokenId) {
-    // Load character index from the contract (used to determine which image asset to return)
-    const imageIndex = new BN(tokenId).mod(TokenTypes).add(new BN(1));
-    const metadata = tokenMetadata[imageIndex];
-
+  async getTokenMetadata(tokenId) {
     const baseUrl = process.env.WEB_URL || 'https://example-dapp-1.bitski.com';
-    const description = metadata.description;
-    const name = metadata.name;
-    const imageUrl = `${baseUrl}/${metadata.imageUrl}`;
+    const inventory = await this.getInventory();
+    const imageIndex = new BN(tokenId).mod(TokenTypes).add(new BN(1));
+    const metadata = inventory.find(({id}) => id == imageIndex.toNumber()) || {};
+
+    const imageUrl = metadata.imageUrl;
 
     //The ERC-721 Metadata standard
     const erc721Details = {
-      name: name,
-      description: description,
+      name: metadata.name,
+      description: metadata.description,
       image: imageUrl
     };
 
     // Additional OpenSea Metadata
     const openSeaExtras = {
       external_url: baseUrl,
-      attributes: metadata.traits,
+      attributes: metadata.traits || [],
     };
 
     // Additional RareBits Metadata
