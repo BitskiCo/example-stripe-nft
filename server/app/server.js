@@ -108,7 +108,7 @@ class Server {
     // The ERC-721 spec includes a method for getting a web URI that includes the
     // details of the token in a JSON format. Our backend app can not only host that end-point
     // but load some of the metadata from the contract itself, completing the loop.
-    this.server.get('/tokens/:tokenId', (req,res) => {
+    this.server.get('/tokens/:tokenId', (req, res) => {
       if (!req.params.tokenId || !req.params.tokenId.match(/^\d+$/g)) {
         return res.send({ error: { message: 'Invalid token id passed' } });
       }
@@ -122,7 +122,7 @@ class Server {
     // Returns the tokenURI for a given token ID from the contract
     this.server.get('/tokenURI/:tokenId', (req, res) => {
       this.app.getTokenURI(req.params.tokenId).then((uri) => {
-        res.json({ tokenURI: uri});
+        res.json({ tokenURI: uri });
       }).catch(error => {
         res.status(500).json({ error: error.toString() });
       });
@@ -133,18 +133,7 @@ class Server {
     // ================================
 
     this.server.post('/process-transaction', (req, res) => {
-      const token = req.body.token;
-      const recipient = req.body.recipient;
-
-      // Ensure payment method token was submitted
-      if (!token) {
-        res.status(422).json({
-          error: {
-            message: 'Transaction token not submitted'
-          }
-        });
-        return;
-      }
+      const { transactionIdentifier, receipt, token, recipient } = req.body;
 
       // Ensure recipient was submitted
       if (!recipient) {
@@ -156,23 +145,42 @@ class Server {
         return;
       }
 
-      this.app.processTransaction(token, recipient).then((response) => {
-        res.json(response);
-      }).catch(error => {
-        console.error(error);
-        res.status(500).json({
+      if (token) {
+        this.app.processStripeTransaction(token, recipient).then((response) => {
+          res.json(response);
+        }).catch(error => {
+          console.error(error);
+          res.status(500).json({
+            error: {
+              message: error.toString()
+            }
+          });
+        });
+      } else if (receipt) {
+        this.app.processAppleTransaction(transactionIdentifier, receipt, recipient).then((response) => {
+          res.json(response);
+        }).catch(error => {
+          console.error(error);
+          res.status(500).json({
+            error: {
+              message: error.toString()
+            }
+          });
+        });
+      } else {
+        res.status(422).json({
           error: {
-            message: error.toString()
+            message: 'Transaction token or Apple receipt not submitted'
           }
         });
-      });
+      }
     });
-  }
+}
 
-  start(port) {
-    // Start server
-    this.server.listen(port, () => console.log(`Listening on port ${port}!`));
-  }
+start(port) {
+  // Start server
+  this.server.listen(port, () => console.log(`Listening on port ${port}!`));
+}
 
 }
 

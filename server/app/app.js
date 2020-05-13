@@ -7,6 +7,7 @@ const BN = require('bn.js');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const Transaction = require('./transaction');
 const Server = require('./server');
+const fetch = require('node-fetch');
 
 const GAS_PRICE = '1100000000'; // Ideally this would be dynamically updated based on demand.
 const MIN_CONFIRMATIONS = 2; // Minimum # of confirmations required before finalizing charges
@@ -133,7 +134,7 @@ class App {
   getTokens(owner) {
     return this.token.methods.balanceOf(owner).call().then(balance => {
       let promises = [];
-      for (var i=0; i < balance; i++) {
+      for (var i = 0; i < balance; i++) {
         const promise = this.token.methods.tokenOfOwnerByIndex(owner, i).call();
         promises.push(promise);
       }
@@ -175,7 +176,7 @@ class App {
     });
   }
 
-  processTransaction(token, recipient) {
+  createMintTransaction(recipient) {
     // Create the transaction inputs
     const tokenId = this.web3.utils.randomHex(32);
     const tokenIdString = this.web3.utils.hexToNumberString(tokenId);
@@ -191,6 +192,11 @@ class App {
     // Create "transaction" object to manage state of the transaction
     const transaction = new Transaction(this.web3, this.contract.methods.mint);
     transaction.setInputs(recipient, tokenId, tokenURI);
+    return {transaction, tokenIdString, expectedImageId};
+  }
+
+  processStripeTransaction(token, recipient) {
+    const {transaction, tokenIdString, expectedImageId} = this.createMintTransaction(recipient);
 
     return transaction.validate(this.currentAccount).then(() => {
       console.log("Transaction validated");
@@ -236,6 +242,53 @@ class App {
           return { transactionHash, token: { id: tokenIdString, imageId: expectedImageId } };
         });
       });
+    });
+  }
+
+  processAppleTransaction(transactionId, receipt, recipient) {
+    const {transaction, tokenIdString, expectedImageId} = this.createMintTransaction(recipient);
+
+    return transaction.validate(this.currentAccount).then(() => {
+      console.log("Transaction validated");
+      let body = {
+        'receipt-data': receipt,
+        'password:': process.env['APPSTORE_PASSWORD'],
+      }
+      return fetch('https://sandbox.itunes.apple.com/verifyReceipt', {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(res => {
+          if (res.ok) { // res.status >= 200 && res.status < 300
+            return res;
+          } else {
+            throw new Error('Could not communicate with the app store');
+          }
+        })
+        .then(res => res.json())
+        .then(appStoreResponse => {
+          if (appStoreResponse['status'] == 0) {
+            return appStoreResponse['receipt'];
+          } else {
+            throw new Error(`Got an invalid receipt status: ${appStoreResponse['status']}`);
+          }
+        })
+        .then(receipt => {
+          const matchingTransaction = receipt.in_app.find(item => {
+            return (item.transaction_id || item.original_transaction_id) === transactionId
+          });
+          if (!matchingTransaction) {
+            throw new Error('No matching transaction in receipt');
+          }
+          console.log('Got receipt from apple', matchingTransaction);
+
+          // TODO: Verify that this receipt has only been used once.
+
+          return transaction.submit(this.currentAccount).then((transactionHash) => {
+            return { transactionHash, token: { id: tokenIdString, imageId: expectedImageId } };
+          });
+        })
     });
   }
 
